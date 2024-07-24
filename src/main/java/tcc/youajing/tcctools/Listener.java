@@ -124,7 +124,7 @@ public class Listener implements org.bukkit.event.Listener {
                     Player player = event.getEntity().getKiller();
                     // 添加不祥征兆效果，随机赋予不祥征兆的强度（1到5），持续3分钟（60秒 * 3）
                     int randomIntensity = new Random().nextInt(5) + 1;
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.BAD_OMEN, 60 * 3, randomIntensity));
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.BAD_OMEN, 20 * 60 * 3 , randomIntensity));
                 }
             }
         }
