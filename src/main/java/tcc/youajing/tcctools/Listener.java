@@ -116,15 +116,17 @@ public class Listener implements org.bukkit.event.Listener {
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
         if (event.getEntity() instanceof Raider) {
-                // 获取杀手（玩家）
-                if (event.getEntity().getKiller() != null) {
+            // 获取杀手（玩家）
+            if (event.getEntity().getKiller() != null) {
+                Raider raider = (Raider) event.getEntity();
+                if (raider.isPatrolLeader()) {
                     Player player = event.getEntity().getKiller();
                     // 添加不祥征兆效果，随机赋予不祥征兆的强度（1到5），持续3分钟（60秒 * 3）
                     int randomIntensity = new Random().nextInt(5) + 1;
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.BAD_OMEN, 20 * 60 * 3 , randomIntensity));
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.BAD_OMEN, 20 * 60 * 3, randomIntensity));
                 }
             }
-        }
+
 
 //        if (event.getEntityType() == EntityType.PILLAGER) {
 //            // 获取掠夺者实体
@@ -140,4 +142,6 @@ public class Listener implements org.bukkit.event.Listener {
 //                }
 //            }
 //        }
+        }
     }
+}
