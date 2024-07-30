@@ -115,19 +115,7 @@ public class Listener implements org.bukkit.event.Listener {
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
-        if (event.getEntityType() == EntityType.WITCH) {
-            // 获取女巫实体
-            Witch witch = (Witch) event.getEntity();
-            // 添4个加红石粉到掉落物
-            ItemStack redstoneDust = new ItemStack(Material.REDSTONE, 4);
-            witch.getWorld().dropItemNaturally(witch.getLocation(), redstoneDust);
-        }
-
-        if (event.getEntityType() == EntityType.PILLAGER) {
-            // 获取掠夺者实体
-            Pillager pillager = (Pillager) event.getEntity();
-            // 检查被击杀的是否是掠夺者队长
-            if (pillager.isPatrolLeader()) {
+        if (event.getEntity() instanceof Raider) {
                 // 获取杀手（玩家）
                 if (event.getEntity().getKiller() != null) {
                     Player player = event.getEntity().getKiller();
@@ -137,5 +125,19 @@ public class Listener implements org.bukkit.event.Listener {
                 }
             }
         }
+
+//        if (event.getEntityType() == EntityType.PILLAGER) {
+//            // 获取掠夺者实体
+//            Pillager pillager = (Pillager) event.getEntity();
+//            // 检查这掠夺者是不是队长
+//            if (pillager.isPatrolLeader()) {
+//                // 获取杀手（玩家）
+//                if (event.getEntity().getKiller() != null) {
+//                    Player player = event.getEntity().getKiller();
+//                    // 添加不祥征兆效果，随机赋予不祥征兆的强度（1到5），持续3分钟（60秒 * 3）
+//                    int randomIntensity = new Random().nextInt(5) + 1;
+//                    player.addPotionEffect(new PotionEffect(PotionEffectType.BAD_OMEN, 20 * 60 * 3 , randomIntensity));
+//                }
+//            }
+//        }
     }
-}
