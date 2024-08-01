@@ -28,25 +28,28 @@ public class Listener implements org.bukkit.event.Listener {
 
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent event) {
-        // 检查实体是否是苦力怕
-        if (event.getEntity() instanceof Creeper) {
-            //取消方块破坏但保留其他效果，并添加闪光粒子效果
+        Entity entity = event.getEntity();
+        if (entity instanceof Creeper) {
+            // 取消方块破坏但保留其他效果，并添加闪光粒子效果
             event.blockList().clear();
             World world = event.getLocation().getWorld();
             Location location = event.getLocation();
-            world.spawnParticle(Particle.FLASH, location, 1);
-            world.spawnParticle(Particle.FLASH, location, 1);
-        } else if (event.getEntity() instanceof Fireball || event.getEntity() instanceof DragonFireball) {
-            //检查实体是否是恶魂或者末影龙发射的火球
-            Entity shooter = (Entity) ((Fireball) event.getEntity()).getShooter();
+            world.spawnParticle(Particle.FLASH, location, 2); // 合并粒子效果
+        } else if (entity instanceof Fireball) {
+            // 检查实体是否是恶魂或者末影龙发射的火球
+            Entity shooter = (Entity) ((Fireball) entity).getShooter();
             if (shooter instanceof Ghast || shooter instanceof EnderDragon) {
                 event.blockList().clear();
             }
-        } else if (event.getEntity() instanceof EnderDragon) {
-            //检查实体是不是末影龙
+        } else if (entity instanceof EnderDragon) {
+            // 检查实体是不是末影龙
+            event.blockList().clear();
+        } else if (entity instanceof WitherSkull) {
+            // 检查实体是不是凋零头颅
             event.blockList().clear();
         }
     }
+
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
