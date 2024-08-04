@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
     compileOnly("org.jetbrains:annotations:24.0.1")
-    compileOnly("org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT")
     implementation("com.github.YufiriaMazenta:CrypticLib:1.0.5")
 }
 

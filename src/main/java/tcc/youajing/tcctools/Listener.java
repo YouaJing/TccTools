@@ -5,6 +5,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityInteractEvent;
@@ -14,8 +15,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.lang.reflect.Method;
 import java.util.Random;
 
+import static org.bukkit.Bukkit.getServer;
 
 
 public class Listener implements org.bukkit.event.Listener {
@@ -34,18 +37,15 @@ public class Listener implements org.bukkit.event.Listener {
             event.blockList().clear();
             World world = event.getLocation().getWorld();
             Location location = event.getLocation();
-            world.spawnParticle(Particle.FLASH, location, 2); // 合并粒子效果
+            world.spawnParticle(Particle.FLASH, location, 1);
         } else if (entity instanceof Fireball) {
             // 检查实体是否是恶魂或者末影龙发射的火球
             Entity shooter = (Entity) ((Fireball) entity).getShooter();
-            if (shooter instanceof Ghast || shooter instanceof EnderDragon) {
+            if (shooter instanceof Ghast || shooter instanceof EnderDragon || shooter instanceof Wither) {
                 event.blockList().clear();
             }
         } else if (entity instanceof EnderDragon) {
             // 检查实体是不是末影龙
-            event.blockList().clear();
-        } else if (entity instanceof WitherSkull) {
-            // 检查实体是不是凋零头颅
             event.blockList().clear();
         }
     }
@@ -130,21 +130,33 @@ public class Listener implements org.bukkit.event.Listener {
                 }
             }
 
-
-//        if (event.getEntityType() == EntityType.PILLAGER) {
-//            // 获取掠夺者实体
-//            Pillager pillager = (Pillager) event.getEntity();
-//            // 检查这掠夺者是不是队长
-//            if (pillager.isPatrolLeader()) {
-//                // 获取杀手（玩家）
-//                if (event.getEntity().getKiller() != null) {
-//                    Player player = event.getEntity().getKiller();
-//                    // 添加不祥征兆效果，随机赋予不祥征兆的强度（1到5），持续3分钟（60秒 * 3）
-//                    int randomIntensity = new Random().nextInt(5) + 1;
-//                    player.addPotionEffect(new PotionEffect(PotionEffectType.BAD_OMEN, 20 * 60 * 3 , randomIntensity));
-//                }
-//            }
-//        }
         }
     }
+
+//    @EventHandler
+//    public void onWitherSpawn(CreatureSpawnEvent event) {
+//        if (event.getEntityType() == EntityType.WITHER) {
+//            try {
+//                // 反射获取 CraftWorld 类
+//                Class<?> craftWorldClass = Class.forName("org.bukkit.craftbukkit." + getServer().getVersion() + ".CraftWorld");
+//                Object craftWorld = craftWorldClass.cast(event.getLocation().getWorld());
+//
+//                // 获取 handle 方法
+//                Method getHandleMethod = craftWorldClass.getDeclaredMethod("getHandle");
+//                Object worldServer = getHandleMethod.invoke(craftWorld);
+//
+//                // 获取 World 类
+//                Class<?> worldClass = worldServer.getClass().getSuperclass();
+//
+//                // 获取 playSound 方法
+//                Method playSoundMethod = worldClass.getDeclaredMethod("a", double.class, double.class, double.class, String.class, float.class, float.class, boolean.class);
+//                playSoundMethod.setAccessible(true);
+//
+//                // 取消声音播放
+//                playSoundMethod.invoke(worldServer, event.getLocation().getX(), event.getLocation().getY(), event.getLocation().getZ(), "", 0.0f, 0.0f, false);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 }
