@@ -3,6 +3,8 @@ package tcc.youajing.tcctools;
 import crypticlib.BukkitPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.event.Listener;
+
 
 public class TccTools extends BukkitPlugin {
 
@@ -10,9 +12,12 @@ public class TccTools extends BukkitPlugin {
     public void enable() {
         //TODO
         // 初始化团队管理器和监听器
-        Listener FCListener = new Listener(this);
+        Listener AllListener = new AllListener(this);
+        Listener WorldEventListener = new WorldEventListener(this);
         // 注册命令和监听器
-        getServer().getPluginManager().registerEvents(FCListener, this);
+        getServer().getPluginManager().registerEvents(AllListener, this);
+        getServer().getPluginManager().registerEvents(WorldEventListener, this);
+
         // team,启动！
         Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[FCProtect]" + ChatColor.AQUA + "######################");
         Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[FCProtect]" + ChatColor.AQUA + "#                    #");
@@ -30,6 +35,5 @@ public class TccTools extends BukkitPlugin {
         Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[FCProtect]" + ChatColor.RED + "#                    #");
         Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_GREEN + "[FCProtect]" + ChatColor.RED + "######################");
     }
-
 
 }

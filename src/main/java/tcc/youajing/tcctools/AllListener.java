@@ -5,27 +5,17 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityInteractEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import java.lang.reflect.Method;
 import java.util.Random;
 
-import static org.bukkit.Bukkit.getServer;
-
-
-public class Listener implements org.bukkit.event.Listener {
+public class AllListener implements org.bukkit.event.Listener {
     private final TccTools plugin;
-
-
-    public Listener(TccTools plugin) {
+    public AllListener(TccTools plugin) {
         this.plugin = plugin;
     }
 
@@ -47,9 +37,17 @@ public class Listener implements org.bukkit.event.Listener {
         } else if (entity instanceof EnderDragon) {
             // 检查实体是不是末影龙
             event.blockList().clear();
+        } else if (entity instanceof Wither) {
+            for (Player player : plugin.getServer().getOnlinePlayers()) {
+                if (event.getLocation().getWorld() ==player.getWorld()) {
+                    if (event.getEntity().getLocation().distance(player.getLocation())
+                            <= plugin.getConfig().getInt("range")) {
+                        player.playSound(player.getLocation(), Sound.ENTITY_WITHER_SPAWN, 1F, 1F);
+                    }
+                }
+            }
         }
     }
-
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
@@ -129,34 +127,6 @@ public class Listener implements org.bukkit.event.Listener {
                     player.addPotionEffect(new PotionEffect(PotionEffectType.BAD_OMEN, 20 * 60 * 3, randomIntensity));
                 }
             }
-
         }
     }
-
-//    @EventHandler
-//    public void onWitherSpawn(CreatureSpawnEvent event) {
-//        if (event.getEntityType() == EntityType.WITHER) {
-//            try {
-//                // 反射获取 CraftWorld 类
-//                Class<?> craftWorldClass = Class.forName("org.bukkit.craftbukkit." + getServer().getVersion() + ".CraftWorld");
-//                Object craftWorld = craftWorldClass.cast(event.getLocation().getWorld());
-//
-//                // 获取 handle 方法
-//                Method getHandleMethod = craftWorldClass.getDeclaredMethod("getHandle");
-//                Object worldServer = getHandleMethod.invoke(craftWorld);
-//
-//                // 获取 World 类
-//                Class<?> worldClass = worldServer.getClass().getSuperclass();
-//
-//                // 获取 playSound 方法
-//                Method playSoundMethod = worldClass.getDeclaredMethod("a", double.class, double.class, double.class, String.class, float.class, float.class, boolean.class);
-//                playSoundMethod.setAccessible(true);
-//
-//                // 取消声音播放
-//                playSoundMethod.invoke(worldServer, event.getLocation().getX(), event.getLocation().getY(), event.getLocation().getZ(), "", 0.0f, 0.0f, false);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
 }
