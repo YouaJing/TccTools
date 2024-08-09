@@ -12,6 +12,7 @@ public class TccTools extends BukkitPlugin {
     public void enable() {
         //TODO
         // 初始化团队管理器和监听器
+        saveDefaultConfig();
         Listener AllListener = new AllListener(this);
         Listener WorldEventListener = new WorldEventListener(this);
         // 注册命令和监听器
