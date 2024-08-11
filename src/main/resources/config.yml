@@ -1,2 +1,5 @@
-range: 128
-#凋灵召唤声音距离
+WitherSoundRange: 128
+#凋灵生成声音半径
+
+EnderDragonSoundRange: 512
+#末影龙死亡声音半径

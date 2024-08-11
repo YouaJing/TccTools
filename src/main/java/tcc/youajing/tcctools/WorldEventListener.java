@@ -7,8 +7,9 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 
-public class WorldEventListener implements org.bukkit.event.Listener{
+public class WorldEventListener implements org.bukkit.event.Listener {
     private final TccTools plugin;
+
     public WorldEventListener(TccTools plugin) {
         this.plugin = plugin;
         ProtocolLibrary.getProtocolManager().addPacketListener(
@@ -16,7 +17,8 @@ public class WorldEventListener implements org.bukkit.event.Listener{
                     @Override
                     public void onPacketSending(PacketEvent event) {
                         PacketContainer packetContainer = event.getPacket();
-                        if (packetContainer.getIntegers().read(0) == 1023) {
+                        int eventId = packetContainer.getIntegers().read(0);
+                        if (eventId == 1023 || eventId == 1028) {
                             packetContainer.getBooleans().write(0, false);
                         }
                     }

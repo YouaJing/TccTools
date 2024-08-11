@@ -41,7 +41,7 @@ public class AllListener implements org.bukkit.event.Listener {
             for (Player player : plugin.getServer().getOnlinePlayers()) {
                 if (event.getLocation().getWorld() ==player.getWorld()) {
                     if (event.getEntity().getLocation().distance(player.getLocation())
-                            <= plugin.getConfig().getInt("range")) {
+                            <= plugin.getConfig().getInt("WitherSoundRange")) {
                         player.playSound(player.getLocation(), Sound.ENTITY_WITHER_SPAWN, 1F, 1F);
                     }
                 }
@@ -125,6 +125,14 @@ public class AllListener implements org.bukkit.event.Listener {
                     // 添加不祥征兆效果，随机赋予不祥征兆的强度（1到5），持续3分钟（60秒 * 3）
                     int randomIntensity = new Random().nextInt(5) + 1;
                     player.addPotionEffect(new PotionEffect(PotionEffectType.BAD_OMEN, 20 * 60 * 3, randomIntensity));
+                }
+            }
+        }else if (event.getEntity() instanceof EnderDragon) {
+            for (Player player : plugin.getServer().getOnlinePlayers()) {
+                if (event.getEntity().getLocation().getWorld() == player.getWorld()) {
+                  if (event.getEntity().getLocation().distance(player.getLocation()) <= plugin.getConfig().getInt("EnderDragonSoundRange")) {
+                      player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 1F, 1F);
+                  }
                 }
             }
         }

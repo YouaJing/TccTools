@@ -29,7 +29,7 @@ java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
 group = "tcc.youajing"
-version = "4.2"
+version = "4.3"
 var mainClass = "${rootProject.group}.${rootProject.name.lowercase()}.TccTools"
 var pluginVersion: String = version.toString() + "-" + SimpleDateFormat("yyyyMMdd").format(System.currentTimeMillis())
 java.sourceCompatibility = JavaVersion.VERSION_1_9
