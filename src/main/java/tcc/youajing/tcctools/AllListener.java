@@ -1,11 +1,17 @@
 package tcc.youajing.tcctools;
 
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
@@ -15,6 +21,7 @@ import java.util.Random;
 
 public class AllListener implements org.bukkit.event.Listener {
     private final TccTools plugin;
+    private final MiniMessage miniMessage = MiniMessage.miniMessage();
     public AllListener(TccTools plugin) {
         this.plugin = plugin;
     }
@@ -73,6 +80,7 @@ public class AllListener implements org.bukkit.event.Listener {
         }
     }
 
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
@@ -82,10 +90,11 @@ public class AllListener implements org.bukkit.event.Listener {
 
             // 给玩家添加随机颜色的床
             player.getInventory().addItem(new ItemStack(randomBedColor, 1));
+            Component welcomeMessage = miniMessage.deserialize("<bold><rainbow>大萌新『<underlined>" + player.getName() + "</underlined>』驾到，通通闪开!!!</rainbow></bold>");
 
             // 发送欢迎消息给所有在线玩家
             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                onlinePlayer.sendMessage(ChatColor.BOLD.toString() + ChatColor.AQUA + "大萌新" + ChatColor.WHITE + player.getName() + ChatColor.AQUA + "驾到，通通闪开！");
+                onlinePlayer.sendMessage(welcomeMessage);
             }
         }
     }
@@ -124,15 +133,27 @@ public class AllListener implements org.bukkit.event.Listener {
                     Player player = event.getEntity().getKiller();
                     // 添加不祥征兆效果，随机赋予不祥征兆的强度（1到5），持续3分钟（60秒 * 3）
                     int randomIntensity = new Random().nextInt(5) + 1;
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.BAD_OMEN, 20 * 60 * 3, randomIntensity));
+                    if (player != null) {
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.BAD_OMEN, 20 * 60 * 3, randomIntensity));
+                    }
                 }
             }
-        }else if (event.getEntity() instanceof EnderDragon) {
+        } else if (event.getEntity() instanceof EnderDragon) {
             for (Player player : plugin.getServer().getOnlinePlayers()) {
                 if (event.getEntity().getLocation().getWorld() == player.getWorld()) {
-                  if (event.getEntity().getLocation().distance(player.getLocation()) <= plugin.getConfig().getInt("EnderDragonSoundRange")) {
-                      player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 1F, 1F);
-                  }
+                    if (event.getEntity().getLocation().distance(player.getLocation()) <= plugin.getConfig().getInt("EnderDragonSoundRange")) {
+                        player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 1F, 1F);
+                    }
+                }
+            }
+        } else if (event.getEntity() instanceof ArmorStand armorStand) {
+            if (armorStand.getLastDamageCause() instanceof EntityDamageByEntityEvent damageEvent) {
+                Entity damager = damageEvent.getDamager();
+                if (damager instanceof Player player) {
+                    ItemStack itemInHand = player.getInventory().getItemInMainHand();
+                    if (itemInHand.getType().toString().endsWith("_SWORD")) {
+                        event.setCancelled(true);
+                    }
                 }
             }
         }
