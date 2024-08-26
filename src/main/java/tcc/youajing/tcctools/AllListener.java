@@ -17,6 +17,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.List;
 import java.util.Random;
 
 public class AllListener implements org.bukkit.event.Listener {
@@ -152,7 +154,14 @@ public class AllListener implements org.bukkit.event.Listener {
                 if (damager instanceof Player player) {
                     ItemStack itemInHand = player.getInventory().getItemInMainHand();
                     if (itemInHand.getType().toString().endsWith("_SWORD")) {
+                        List<ItemStack> drops = event.getDrops();
                         event.setCancelled(true);
+                        Location location = event.getEntity().getLocation();
+                        for (ItemStack drop : drops) {
+                            if (!drop.getType().equals(Material.ARMOR_STAND)) {
+                                location.getWorld().dropItemNaturally(location, drop);
+                            }
+                        }
                     }
                 }
             }

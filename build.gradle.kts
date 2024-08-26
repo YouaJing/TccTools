@@ -22,7 +22,7 @@ dependencies {
     compileOnly("org.jetbrains:annotations:24.0.1")
     compileOnly("org.spigotmc:spigot-api:1.21.1-R0.1-SNAPSHOT")
     compileOnly ("com.comphenix.protocol:ProtocolLib:5.1.0")
-    compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
     implementation("com.github.YufiriaMazenta:CrypticLib:1.0.5")
     implementation("net.kyori:adventure-api:4.17.0")
     implementation("net.kyori:adventure-text-minimessage:4.17.0")
@@ -32,7 +32,7 @@ java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
 group = "tcc.youajing"
-version = "4.4"
+version = "4.5"
 var mainClass = "${rootProject.group}.${rootProject.name.lowercase()}.TccTools"
 var pluginVersion: String = version.toString() + "-" + SimpleDateFormat("yyyyMMdd").format(System.currentTimeMillis())
 java.sourceCompatibility = JavaVersion.VERSION_21
