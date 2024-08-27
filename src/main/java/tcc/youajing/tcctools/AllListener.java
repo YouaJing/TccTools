@@ -1,6 +1,5 @@
 package tcc.youajing.tcctools;
 
-import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.*;
@@ -54,6 +53,15 @@ public class AllListener implements org.bukkit.event.Listener {
                         player.playSound(player.getLocation(), Sound.ENTITY_WITHER_SPAWN, 1F, 1F);
                     }
                 }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDamage(EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Player damager && event.getEntity() instanceof Player damagedPlayer) {
+            if (damager.getInventory().getItemInMainHand().getType() == Material.AIR) {
+                damagedPlayer.getWorld().spawnParticle(Particle.ANGRY_VILLAGER, damagedPlayer.getLocation().add(0, 2, 0), 1);
             }
         }
     }

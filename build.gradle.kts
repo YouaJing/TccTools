@@ -32,7 +32,7 @@ java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
 group = "tcc.youajing"
-version = "4.5"
+version = "4.6"
 var mainClass = "${rootProject.group}.${rootProject.name.lowercase()}.TccTools"
 var pluginVersion: String = version.toString() + "-" + SimpleDateFormat("yyyyMMdd").format(System.currentTimeMillis())
 java.sourceCompatibility = JavaVersion.VERSION_21
