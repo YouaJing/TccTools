@@ -1,16 +1,18 @@
 package tcc.youajing.tcctools;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityInteractEvent;
+import org.bukkit.event.entity.*;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
@@ -173,6 +175,46 @@ public class AllListener implements org.bukkit.event.Listener {
                     }
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerChat(AsyncPlayerChatEvent event) {
+        Player player = event.getPlayer();
+        String message = event.getMessage();
+
+        // 检查玩家输入的消息是否包含 [i] 或 [item]
+        if (message.contains("[i]") || message.contains("[item]")) {
+            ItemStack handItem = player.getInventory().getItemInMainHand();
+            Component displayName;
+
+            if (handItem != null && handItem.getType() != Material.AIR) {
+                displayName = handItem.displayName()
+                        .decorate(TextDecoration.BOLD);
+                displayName = displayName.hoverEvent(handItem.asHoverEvent());
+            } else {
+                displayName = Component.text(player.getName() + "的手")
+                        .decorate(TextDecoration.BOLD)
+                        .decorate(TextDecoration.UNDERLINED).hoverEvent(Component.text("手上什么也没有"));
+            }
+
+            // 初始化 MiniMessage 和 LegacyComponentSerializer
+            MiniMessage miniMessage = MiniMessage.miniMessage();
+            LegacyComponentSerializer legacySerializer = LegacyComponentSerializer.builder().hexColors().hexCharacter('#').character('&').build();
+
+            // 将物品信息插入到消息中
+            Component chatMessage = legacySerializer.deserialize(message);
+            chatMessage = chatMessage.replaceText(TextReplacementConfig.builder().matchLiteral("[i]").replacement(displayName).build());
+            chatMessage = chatMessage.replaceText(TextReplacementConfig.builder().matchLiteral("[item]").replacement(displayName).build());
+
+            // 使用 PlaceholderAPI 处理占位符
+            String formattedMessage = String.format("<b>%%teamplugin_color%%%%teamplugin_name4chat%%<reset><b>%%vault_prefix%%%s<reset><b>%%vault_suffix%% <#a1c4fd>>><reset> ", player.getName());
+            formattedMessage = PlaceholderAPI.setPlaceholders(player, formattedMessage);
+            Component finalMessage = miniMessage.deserialize(formattedMessage).append(chatMessage);
+
+            // 取消原始消息并广播新消息
+            event.setCancelled(true);
+            Bukkit.broadcast(finalMessage);
         }
     }
 }
