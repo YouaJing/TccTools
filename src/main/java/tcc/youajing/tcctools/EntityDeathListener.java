@@ -23,15 +23,11 @@ public class EntityDeathListener implements org.bukkit.event.Listener {
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
-        // 当实体死亡时，根据实体类型执行不同的操作
         if (event.getEntity() instanceof Raider) {
-            // 获取杀手（玩家）
             if (event.getEntity().getKiller() != null) {
                 Raider raider = (Raider) event.getEntity();
-                // 如果是巡逻队长，则给杀手玩家添加不祥征兆效果
                 if (raider.isPatrolLeader()) {
                     Player player = event.getEntity().getKiller();
-                    // 添加不祥征兆效果，随机赋予不祥征兆的强度（1到5），持续3分钟（60秒 * 3）
                     int randomIntensity = new Random().nextInt(5) + 1;
                     if (player != null) {
                         player.addPotionEffect(new PotionEffect(PotionEffectType.BAD_OMEN, 20 * 60 * 3, randomIntensity));
@@ -39,7 +35,6 @@ public class EntityDeathListener implements org.bukkit.event.Listener {
                 }
             }
         } else if (event.getEntity() instanceof EnderDragon) {
-            // 当末影龙死亡时，播放死亡声音给附近的玩家
             for (Player player : plugin.getServer().getOnlinePlayers()) {
                 if (event.getEntity().getLocation().getWorld() == player.getWorld()) {
                     if (event.getEntity().getLocation().distance(player.getLocation()) <= plugin.getConfig().getInt("EnderDragonSoundRange")) {
@@ -48,19 +43,36 @@ public class EntityDeathListener implements org.bukkit.event.Listener {
                 }
             }
         } else if (event.getEntity() instanceof ArmorStand armorStand) {
-            // 当盔甲架受到伤害时，检查伤害来源
             if (armorStand.getLastDamageCause() instanceof EntityDamageByEntityEvent damageEvent) {
                 Entity damager = damageEvent.getDamager();
-                // 如果伤害来源是玩家，并且玩家手持剑，则取消事件并掉落物品
                 if (damager instanceof Player player) {
                     ItemStack itemInHand = player.getInventory().getItemInMainHand();
                     if (itemInHand.getType().toString().endsWith("_SWORD")) {
                         List<ItemStack> drops = event.getDrops();
                         event.setCancelled(true);
                         Location location = event.getEntity().getLocation();
+
                         for (ItemStack drop : drops) {
-                            if (!drop.getType().equals(Material.ARMOR_STAND)) {
-                                location.getWorld().dropItemNaturally(location, drop);
+                            if (drop.getType().name().endsWith("_HELMET")) {
+                                armorStand.getEquipment().setHelmet(drop);
+                            } else if (drop.getType().name().endsWith("_CHESTPLATE")) {
+                                armorStand.getEquipment().setChestplate(drop);
+                            } else if (drop.getType().name().endsWith("_LEGGINGS")) {
+                                armorStand.getEquipment().setLeggings(drop);
+                            } else if (drop.getType().name().endsWith("_BOOTS")) {
+                                armorStand.getEquipment().setBoots(drop);
+                            } else if (drop.getType().name().endsWith("_SWORD") || drop.getType().name().endsWith("_AXE") || drop.getType().name().endsWith("BOW") || drop.getType().name().endsWith("MACE") || drop.getType().name().endsWith("TRIDENT") || drop.getType().name().endsWith("_HOE ") || drop.getType().name().endsWith("_PICKAXE") || drop.getType().name().endsWith("_SHOVEL")) {
+                                if (armorStand.getEquipment().getItemInMainHand().getType() == Material.AIR) {
+                                    armorStand.getEquipment().setItemInMainHand(drop);
+                                } else if (armorStand.getEquipment().getItemInOffHand().getType() == Material.AIR) {
+                                    armorStand.getEquipment().setItemInOffHand(drop);
+                                } else {
+                                    location.getWorld().dropItemNaturally(location, drop);
+                                }
+                            } else {
+                                if (!drop.getType().equals(Material.ARMOR_STAND)) {
+                                    location.getWorld().dropItemNaturally(location, drop);
+                                }
                             }
                         }
                     }
@@ -68,5 +80,6 @@ public class EntityDeathListener implements org.bukkit.event.Listener {
             }
         }
     }
+
 }
 
