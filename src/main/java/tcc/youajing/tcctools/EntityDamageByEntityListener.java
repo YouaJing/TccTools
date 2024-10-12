@@ -32,10 +32,14 @@ public class EntityDamageByEntityListener implements org.bukkit.event.Listener {
      */
     @EventHandler
     public void onPlayerDamage(EntityDamageByEntityEvent event) {
+        // 检查伤害来源和受伤实体是否均为玩家
         if (event.getDamager() instanceof Player damager && event.getEntity() instanceof Player damagedPlayer) {
+
+            // 如果攻击者手持物为空，则在受伤玩家附近生成愤怒村民的粒子效果
             if (damager.getInventory().getItemInMainHand().getType() == Material.AIR) {
                 damagedPlayer.getWorld().spawnParticle(Particle.ANGRY_VILLAGER, damagedPlayer.getLocation().add(0, 2, 0), 1);
             }
         }
     }
+
 }

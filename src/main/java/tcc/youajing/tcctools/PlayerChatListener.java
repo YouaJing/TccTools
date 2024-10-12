@@ -34,12 +34,16 @@ public class PlayerChatListener implements org.bukkit.event.Listener{
 
             // 初始化 MiniMessage 和 LegacyComponentSerializer
             MiniMessage miniMessage = MiniMessage.miniMessage();
-            LegacyComponentSerializer legacySerializer = LegacyComponentSerializer.builder().hexColors().hexCharacter('#').character('&').build();
+            LegacyComponentSerializer legacySerializer = LegacyComponentSerializer.builder()
+                    .hexColors()
+                    .hexCharacter('#')
+                    .character('&')
+                    .build();
 
             // 将物品信息插入到消息中
-            Component chatMessage = legacySerializer.deserialize(message);
-            chatMessage = chatMessage.replaceText(TextReplacementConfig.builder().matchLiteral("[i]").replacement(displayItem).build());
-            chatMessage = chatMessage.replaceText(TextReplacementConfig.builder().matchLiteral("[item]").replacement(displayItem).build());
+            Component chatMessage = legacySerializer.deserialize(message)
+                    .replaceText(TextReplacementConfig.builder().matchLiteral("[i]").replacement(displayItem).build())
+                    .replaceText(TextReplacementConfig.builder().matchLiteral("[item]").replacement(displayItem).build());
 
             // 使用 PlaceholderAPI 处理占位符
             String formattedMessage = String.format("<b>%%teamplugin_color%%%%teamplugin_name4chat%%<reset><b>%%vault_prefix%%%s<reset><b>%%vault_suffix%% <#a1c4fd>>><reset> ", player.getName());
@@ -58,13 +62,15 @@ public class PlayerChatListener implements org.bukkit.event.Listener{
 
         if (handItem != null && handItem.getType() != Material.AIR) {
             displayItem = handItem.displayName()
-                    .decorate(TextDecoration.BOLD);
-            displayItem = displayItem.hoverEvent(handItem.asHoverEvent());
+                    .decorate(TextDecoration.BOLD)
+                    .hoverEvent(handItem.asHoverEvent());
         } else {
             displayItem = Component.text(player.getName() + "的手")
                     .decorate(TextDecoration.BOLD)
-                    .decorate(TextDecoration.UNDERLINED).hoverEvent(Component.text("手上什么也没有"));
+                    .decorate(TextDecoration.UNDERLINED)
+                    .hoverEvent(Component.text("手上什么也没有"));
         }
         return displayItem;
     }
+
 }

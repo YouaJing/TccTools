@@ -26,15 +26,12 @@ public class PlayerJoinListener implements org.bukkit.event.Listener{
         if (!player.hasPlayedBefore()) {
             // 随机选择一种床颜色
             Material randomBedColor = getRandomBedColor();
-
             // 给玩家添加随机颜色的床
             player.getInventory().addItem(new ItemStack(randomBedColor, 1));
+            // 欢迎消息
             Component welcomeMessage = miniMessage.deserialize("<bold><rainbow>大萌新『<underlined>" + player.getName() + "</underlined>』驾到，通通闪开!!!</rainbow></bold>");
-
             // 发送欢迎消息给所有在线玩家
-            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                onlinePlayer.sendMessage(welcomeMessage);
-            }
+            Bukkit.getOnlinePlayers().forEach(onlinePlayer -> onlinePlayer.sendMessage(welcomeMessage));
         }
     }
 
@@ -57,8 +54,8 @@ public class PlayerJoinListener implements org.bukkit.event.Listener{
                 Material.RED_BED,
                 Material.BLACK_BED
         };
-
         Random random = new Random();
         return bedColors[random.nextInt(bedColors.length)];
     }
+
 }
