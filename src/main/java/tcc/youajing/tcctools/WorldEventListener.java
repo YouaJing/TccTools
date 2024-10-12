@@ -32,7 +32,7 @@ public class WorldEventListener implements org.bukkit.event.Listener {
                     public void onPacketSending(PacketEvent event) {
                         PacketContainer packetContainer = event.getPacket();
                         int eventId = packetContainer.getIntegers().read(0);
-                        // 当事件ID为1023或1028时，将包中的布尔值改为false
+                        // 当事件ID为1023或1028时，将包中的布尔值改为false（也就是取消末影龙死亡和凋灵召唤音效）
                         if (eventId == 1023 || eventId == 1028) {
                             packetContainer.getBooleans().write(0, false);
                         }
